@@ -41,6 +41,9 @@ public class Blocks implements Main.Extractor {
             blockJson.addProperty("item_id", Registries.ITEM.getRawId(block.asItem()));
             blockJson.addProperty("hardness", block.getHardness());
             blockJson.addProperty("blast_resistance", block.getBlastResistance());
+            blockJson.addProperty("slipperiness", block.getSlipperiness());
+            blockJson.addProperty("speed_factor", block.getVelocityMultiplier());
+            blockJson.addProperty("jump_factor", block.getJumpVelocityMultiplier());
 
             if (block.asItem() instanceof VerticallyAttachableBlockItem wsbItem) {
                 if (wsbItem.getBlock() == block) {

@@ -25,6 +25,9 @@ struct Block {
     states: Vec<State>,
     hardness: f32,
     blast_resistance: f32,
+    slipperiness: f32,
+    speed_factor: f32,
+    jump_factor: f32,
 }
 
 impl Block {
@@ -439,6 +442,42 @@ pub fn build() -> anyhow::Result<TokenStream> {
         })
         .collect::<TokenStream>();
 
+    let block_kind_to_slipperiness_arms = blocks
+        .iter()
+        .map(|block| {
+            let name = ident(block.name.to_pascal_case());
+            let slipperiness = block.slipperiness;
+
+            quote! {
+                BlockKind::#name => #slipperiness,
+            }
+        })
+        .collect::<TokenStream>();
+
+    let block_kind_to_speed_factor_arms = blocks
+        .iter()
+        .map(|block| {
+            let name = ident(block.name.to_pascal_case());
+            let speed_factor = block.speed_factor;
+
+            quote! {
+                BlockKind::#name => #speed_factor,
+            }
+        })
+        .collect::<TokenStream>();
+
+    let block_kind_to_jump_factor_arms = blocks
+        .iter()
+        .map(|block| {
+            let name = ident(block.name.to_pascal_case());
+            let jump_factor = block.jump_factor;
+
+            quote! {
+                BlockKind::#name => #jump_factor,
+            }
+        })
+        .collect::<TokenStream>();
+
     let block_kind_from_raw_arms = blocks
         .iter()
         .map(|block| {
@@ -805,6 +844,24 @@ pub fn build() -> anyhow::Result<TokenStream> {
             pub const fn blast_resistance(self) -> f32 {
                 match self {
                     #block_kind_to_blast_resistance_arms
+                }
+            }
+
+            pub const fn slipperiness(self) -> f32 {
+                match self {
+                    #block_kind_to_slipperiness_arms
+                }
+            }
+
+            pub const fn speed_factor(self) -> f32 {
+                match self {
+                    #block_kind_to_speed_factor_arms
+                }
+            }
+
+            pub const fn jump_factor(self) -> f32 {
+                match self {
+                    #block_kind_to_jump_factor_arms
                 }
             }
 
